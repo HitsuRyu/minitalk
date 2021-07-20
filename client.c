@@ -4,13 +4,13 @@
 #include <unistd.h>
 #include "libft/libft.h"
 
-int main(int argc, char **argv)
+int	main(int argc, char **argv)
 {
 	char	*str;
 	int		i;
 	int		pid;
 	size_t	len;
-	
+
 	if (argc != 3)
 	{
 		write(1, "error", 5);
@@ -19,7 +19,7 @@ int main(int argc, char **argv)
 	pid = ft_atoi(argv[1]);
 	str = argv[2];
 	len = ft_strlen(argv[2]) + 1;
-	while(len--)
+	while (len--)
 	{
 		i = 0b10000000;
 		while (i > 0)
@@ -28,7 +28,7 @@ int main(int argc, char **argv)
 				kill(pid, SIGUSR1);
 			else
 				kill(pid, SIGUSR2);
-			i = i>>1;
+			i = i >> 1;
 			usleep(150);
 		}
 		str++;

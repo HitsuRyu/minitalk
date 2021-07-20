@@ -4,17 +4,19 @@
 #include <unistd.h>
 #include "libft/libft.h"
 
-struct	g_struct
+struct	s_struct
 {
 	char	c;
 	int		n;
 };
 
-struct	g_struct g_c;
+struct s_struct	g_c;
 
-void handler(int sig)
+void	handler(int sig)
 {
-	int		i = 0b10000000;
+	int		i;
+
+	i = 0b10000000;
 	if (sig == SIGUSR1)
 	{
 		g_c.c |= i >> g_c.n;
@@ -31,17 +33,17 @@ void handler(int sig)
 	}
 }
 
-int main()
+int	main(void)
 {
-	g_c.c = 0b0000000;
-	g_c.n = 0;
-	char *pid = ft_itoa(getpid());
+	char	*pid;
+
+	pid = ft_itoa(getpid());
 	write(1, pid, ft_strlen(pid));
 	write(1, "\n", 1);
-
+	g_c.c = 0b0000000;
+	g_c.n = 0;
 	signal(SIGUSR1, handler);
 	signal(SIGUSR2, handler);
-
 	while (1)
 	{
 		pause();

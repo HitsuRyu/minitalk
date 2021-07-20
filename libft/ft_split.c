@@ -23,7 +23,7 @@ static size_t	ft_count_strs(char const *s, char c)
 		return (0);
 	i = 0;
 	counter = 0;
-	while (s[i] && s[i] ==c)
+	while (s[i] && s[i] == c)
 	{
 		i++;
 	}
