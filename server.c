@@ -1,51 +1,54 @@
-#include <stdio.h>
 #include <signal.h>
 #include <sys/types.h>
 #include <unistd.h>
 #include "libft/libft.h"
 
-struct	s_struct
+typedef struct s_struct
 {
-	char	c;
-	int		n;
-};
+	char	byte;
+	int		offset;
+}				t_info;
 
-struct s_struct	g_c;
+t_info	g_info;
 
-void	handler(int sig)
+void	handler(int sig, siginfo_t *siginfo, void *context)
 {
-	int		i;
+	int	i;
 
 	i = 0b10000000;
 	if (sig == SIGUSR1)
+		g_info.byte |= i >> g_info.offset;
+	g_info.offset++;
+	if (g_info.offset == 8)
 	{
-		g_c.c |= i >> g_c.n;
-	}
-	g_c.n++;
-	if (g_c.n == 8)
-	{
-		if (g_c.c == '\0')
+		if (g_info.byte == '\0')
 			write(1, "\n", 1);
 		else
-			write(1, &g_c.c, 1);
-		g_c.c = 0b0000000;
-		g_c.n = 0;
+			write(1, &g_info.byte, 1);
+		g_info.offset = 0;
+		g_info.byte = 0b00000000;
 	}
+	usleep(30);
+	kill(siginfo->si_pid, SIGUSR1);
+	context = NULL;
 }
 
 int	main(void)
 {
-	char	*pid;
+	char				*pid;
+	struct sigaction	act;
 
 	pid = ft_itoa(getpid());
 	write(1, pid, ft_strlen(pid));
 	write(1, "\n", 1);
-	g_c.c = 0b0000000;
-	g_c.n = 0;
-	signal(SIGUSR1, handler);
-	signal(SIGUSR2, handler);
+	free(pid);
+	act.sa_sigaction = &handler;
+	act.sa_flags = SA_SIGINFO;
+	sigemptyset(&act.sa_mask);
+	sigaddset(&act.sa_mask, SIGUSR1);
+	sigaddset(&act.sa_mask, SIGUSR2);
+	sigaction(SIGUSR1, &act, NULL);
+	sigaction(SIGUSR2, &act, NULL);
 	while (1)
-	{
 		pause();
-	}
 }
