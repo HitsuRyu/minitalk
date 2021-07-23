@@ -1,5 +1,7 @@
 CLIENT = client
 SERVER = server
+CLIENT_BONUS = client_bonus
+SERVER_BONUS = server_bonus
 CC = gcc
 CFLAGS = -Wall -Werror -Wextra
 LIB = -L./libft -lft
@@ -16,6 +18,14 @@ $(SERVER): server.o
 $(CLIENT): client.o
 	$(CC) client.o $(LIB) -o $@
 
+bonus : $(LIBFT) $(CLIENT_BONUS) $(SERVER_BONUS)
+
+$(CLIENT_BONUS): client_bonus.o
+	$(CC) client_bonus.o $(LIB) -o $@
+
+$(SERVER_BONUS): server_bonus.o
+	$(CC) server_bonus.o $(LIB) -o $@
+
 %.o : %.c
 	$(CC) $(FLAGS) $< -c
 
@@ -25,6 +35,6 @@ clean :
 
 fclean: clean
 	make fclean -C libft
-	rm -f $(SERVER) $(CLIENT)
+	rm -f $(SERVER) $(CLIENT) $(CLIENT_BONUS) $(SERVER_BONUS)
 
 re: fclean all
